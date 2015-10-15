@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head>
+	<title> {{ title }} </title>
+</head>
+<body>
+<form action = "{{ url_for(submit_url) }}">
+<label for = "single_input">
+{{prompt}} </label>
+<input name = "single_input" id="single_input" type="text">
+<input type = "submit" value = "Submit">
+</form>
+</body>
+</html>
