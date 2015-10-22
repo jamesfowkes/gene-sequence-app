@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+	<title> {{ title }} </title>
+</head>
+<body>
+{% if form %}
+	<h1> Add new GenBank entry </h1>
+	<form method='POST' action ='/genbank/add'>
+		{{form.hidden_tag()}}
+		{{form.genbank_ID.label}}
+		{{form.genbank_ID}}
+		<input type = "submit" value = "Add"/>
+	</form>
+{% endif %}
+
+{% if genbank_data %}
+{{genbank_data ["ID"]}}
+{% endif %}
+
+</body>
+</html>
