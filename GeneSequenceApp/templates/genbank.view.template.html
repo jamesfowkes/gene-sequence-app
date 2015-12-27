@@ -3,14 +3,15 @@
 <html>
 {% block head %}
 	{{super()}}
-	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
 {% endblock %}
 
-{% block title %} {{ title }} {% endblock %}
-{% block styles %}
-	<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
-	<link href="{{ url_for('static', filename='css/main-style.css') }}" rel="stylesheet">
-{% endblock %}
+	{% block title %} {{ title }} {% endblock %}
+	{% block styles %}
+		{{super()}}
+		<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/main-style.css') }}" rel="stylesheet">
+	{% endblock %}
 
 {% block content %}
 <div class="container">
