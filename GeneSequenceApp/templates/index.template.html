@@ -1,10 +1,31 @@
-<!doctype html>
+{% extends "bootstrap/base.html" %}
+
 <html>
 <head>
-	<title> {{ title }} </title>
+	{% block title %} {{ title }} {% endblock %}
+	{% block styles %}
+		{{super()}}
+		<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/main-style.css') }}" rel="stylesheet">
+	{% endblock %}
 </head>
-<body>
-<h1>{{ heading1 }}  </h1>
-<h2>{{ sequence }} </h2>
-</body>
+
+{% block content %}
+<div class="container">
+	<h1> Gene Sequence Database </h1>
+	
+	<div class="row">
+		<div class="col-md-5 stdblock">
+			<h2>Actions</h2>
+			<a href="{{ url_for('render_genbank_add') }}">Add new sequence from GenBank</a>
+			{# <a href="{{ url_for('render_manual_add') }}">Add new sequence manually</a> #}
+		</div>
+		<div class="col-md-5 col-md-offset-1 stdblock">
+			<h2>Views</h2>
+			<a href="{{ url_for('render_genbank_view') }}">GenBank Entries</a>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
 </html>

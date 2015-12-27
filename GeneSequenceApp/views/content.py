@@ -3,8 +3,8 @@ from flask import request
 from GeneSequenceApp import app
 
 @app.route('/')
-def hello_world():
-	return render_template("index.template.html", title = "a nice title for your page", heading1="some other text")
+def render_homepage():
+	return render_template("index.template.html", title = "Gene Sequence Database")
 	
 @app.route('/complement/')
 def complement_seq():

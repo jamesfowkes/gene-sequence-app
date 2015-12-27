@@ -1,1 +1,0 @@
-DATABASE = "spiderapp.db"

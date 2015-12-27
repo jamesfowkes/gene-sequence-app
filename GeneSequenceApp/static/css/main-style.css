@@ -1,0 +1,16 @@
+body {
+	background-color: #222244;
+	color: #DDDDDD;
+}
+
+div.stdblock
+{
+	border-radius:10px;
+	background-color: #111133;
+	padding-bottom: 15px;
+}
+
+form
+{
+	padding-top: 15px;
+}

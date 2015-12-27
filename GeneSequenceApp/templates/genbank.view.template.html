@@ -1,0 +1,47 @@
+{% extends "bootstrap/base.html" %}
+
+<html>
+{% block head %}
+	{{super()}}
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+{% endblock %}
+
+{% block title %} {{ title }} {% endblock %}
+{% block styles %}
+	<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/main-style.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<h1> GenBank Entries </h1>
+			
+	<table class="table">
+		<thead>
+			<tr>
+				<th>GenBank ID</th>
+				<th>Accession Number</th>
+				<th>Species</th>
+				<th>Description</th>
+				<th>Silk Type</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for entry in genbank_entries %}
+			<tr>
+				<td>
+					<a href='http://www.ncbi.nlm.nih.gov/nuccore/{{ entry.GenBank_ID }}'>{{ entry.GenBank_ID }}</a>
+				</td>
+				<td>{{ entry.Accession_Number }} </td>
+				<td>{{ entry.Genus }} {{ entry.Species }}</td>
+				<td>{{ entry.Desc }} </td>
+				<td>{{ entry.Silk_Type }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+
+{% endblock %}
+
+</html>

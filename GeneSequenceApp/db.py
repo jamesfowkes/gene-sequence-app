@@ -19,8 +19,11 @@ _engine = None
 
 def create_if_not_exists(force_creation=False):
     connect_db()
-    
-    if not database_exists(_engine.url) or force_creation:
+
+    db_exists = database_exists(_engine.url)
+    if not db_exists or force_creation:
+        get_module_logger().info("Creating database '{}'. ({}, {})".format(
+            _engine.url, not db_exists, force_creation))
         create_database(_engine.url)
         Base.metadata.create_all(bind=_engine)
 
