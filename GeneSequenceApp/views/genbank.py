@@ -25,7 +25,7 @@ def render_genbank_view():
 @app.route('/genbank/add', methods = ("GET" ,"POST"))
 def render_genbank_add():
 	form_to_validate = GenBankEntryForm()
-	genbank_data = {}
+	
 	if form_to_validate.validate_on_submit():
 		if genbank.try_add_from_genbank(form_to_validate.genbank_id.data, form_to_validate.silk_type.data):
 			return redirect(url_for('render_genbank_view'))

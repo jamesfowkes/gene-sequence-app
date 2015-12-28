@@ -5,13 +5,15 @@ import os
 import pickle
 import datetime
 
-import GeneSequenceApp
-from GeneSequenceApp.db import session, Base
 from sqlalchemy import Column, Integer, String
 
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Alphabet import IUPAC
+
+import GeneSequenceApp
+from GeneSequenceApp.db import session, Base
+from GeneSequenceApp.datetime_helper import datetime_within_range
 
 def get_module_logger():
     return logging.getLogger(__name__)
@@ -19,9 +21,6 @@ def get_module_logger():
 get_module_logger().setLevel(logging.INFO)
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-def datetime_within_range(to_test, centre, margin):
-        return (to_test - margin) < centre < (to_test + margin)
 
 def split_into_genus_and_species(organism):
     return organism.split(" ")
@@ -56,9 +55,6 @@ class GenBankEntry(Base):
             query = query.filter(GenBankEntry.Silk_Type == silk_type)
         return query.all()
 
-    def set_date_added(self, dt=datetime.datetime.now()):
-        self.Date_Added = int(dt.timestamp())
-
     def date_added(self):
         return datetime.datetime.fromtimestamp(self.Date_Added)
 
@@ -82,11 +78,9 @@ class GenBankEntry(Base):
         session().add(self)
         session().commit()
 
-class GenBankEntryTests(unittest.TestCase):
-    def setUp(self):
-        self.db_fd, GeneSequenceApp.app.config['DATABASE'] = tempfile.mkstemp()
-        self.app = GeneSequenceApp.app.test_client()
-        GeneSequenceApp.db.create_if_not_exists(True)
+    @staticmethod    
+    def fill_db_with_test_data():
+        
         GenBankEntry(GenBank_ID="62638183", Accession_Number="AY994149.1", Desc="Latrodectus hesperus egg case silk protein-1 (ECP-1) mRNA, complete cds", Genus="Latrodectus", Species="hesperus", Silk_Type="ECP", Date_Added=0).insert()
         GenBankEntry(GenBank_ID="399932052", Accession_Number="JX262192", Desc="Latrodectus hesperus clone 2525 aggregate gland silk factor 2 mRNA, complete cds", Genus="Latrodectus", Species="hesperus", Silk_Type="AcSp", Date_Added=0).insert()
         GenBankEntry(GenBank_ID="422900783", Accession_Number="JX978182", Desc="Latrodectus geometricus clone LgSD7 aciniform spidroin 1 (AcSp1) gene, partial cds", Genus="Latrodectus", Species="geometricus", Silk_Type="AcSp", Date_Added=0).insert()
@@ -95,6 +89,15 @@ class GenBankEntryTests(unittest.TestCase):
         GenBankEntry(GenBank_ID="170672094", Accession_Number="EU394445.1", Desc="Latrodectus hesperus minor ampullate spidroin 1-like protein mRNA, partial cds", Genus="Latrodectus", Species="hesperus", Silk_Type="MaSp1", Date_Added=0).insert()
         GenBankEntry(GenBank_ID="89113991", Accession_Number="DQ399324", Desc="Deinopis spinosa clone DS28 MiSp mRNA, partial cds", Genus="Deinopis", Species="spinosa", Silk_Type="MiSp", Date_Added=0).insert()
         GenBankEntry(GenBank_ID="89114011", Accession_Number="DQ399334.1", Desc="Uloborus diversus clone US101 MaSp2 mRNA, partial cds", Genus="Uloborus", Species="diversus", Silk_Type="MaSp2", Date_Added=0).insert()
+
+
+class GenBankEntryTests(unittest.TestCase):
+
+    def setUp(self):
+        self.db_fd, GeneSequenceApp.app.config['DATABASE'] = tempfile.mkstemp()
+        self.app = GeneSequenceApp.app.test_client()
+        GeneSequenceApp.db.create_if_not_exists(True)
+        GenBankEntry.fill_db_with_test_data()
         
     def tearDown(self):
         os.close(self.db_fd)
@@ -122,7 +125,7 @@ class GenBankEntryTests(unittest.TestCase):
         with GeneSequenceApp.app.test_request_context("/"):
             GeneSequenceApp.app.preprocess_request()
             
-            with open(__location__ + "/422900759.pickle", 'rb') as f:
+            with open(__location__ + "/testfiles/422900759.pickle", 'rb') as f:
                 record = pickle.load(f)
 
             entry = GenBankEntry.create_from_seqrecord(record, "AcSp1")
