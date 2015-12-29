@@ -1,0 +1,30 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+<html>
+<head>
+	{% block title %} {{ title }} {% endblock %}
+	{% block styles %}
+		{{super()}}
+		<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/main-style.css') }}" rel="stylesheet">
+	{% endblock %}
+</head>
+
+{% block content %}
+<div class="container">
+	<h1> Add new sequence to GenBank entry </h1>
+			
+	<div class="row stdblock">
+		<div class="col-md-12">
+			<form class="form" method="post" role="form" action ='/sequences/add'>
+				{{ form.hidden_tag() }}
+				{{ wtf.form_field(form.genbank_id) }}
+				{{ wtf.form_field(form.sequence) }}
+				{{ wtf.form_field(form.submit)}}
+			</form>
+		</div>
+	</div>
+{% endblock %}
+
+</html>

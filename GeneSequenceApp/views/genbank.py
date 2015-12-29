@@ -1,7 +1,6 @@
 import logging
 
-from flask import render_template
-from flask import request, redirect, url_for
+from flask import render_template, flash, request, redirect, url_for
 
 from GeneSequenceApp import app
 
@@ -27,9 +26,12 @@ def render_genbank_add():
 	form_to_validate = GenBankEntryForm()
 	
 	if form_to_validate.validate_on_submit():
+		get_module_logger().info("GenBank add form validated.")
 		if genbank.try_add_from_genbank(form_to_validate.genbank_id.data, form_to_validate.silk_type.data):
+			flash("GenBank ID {} successfully added!".format(form_to_validate.genbank_id.data), 'alert-success')
 			return redirect(url_for('render_genbank_view'))
 		else:
-			return render_template("genbank.view.template.html", title = "GenBank Interface", genbank_data = "Failed!")
+			flash("Failed to add GenBank ID {}!".format(form_to_validate.genbank_id.data), 'bad')
+			return redirect(url_for('render_genbank_view'))
 	else:
 		return render_template("genbank.form.template.html", title = "GenBank Interface", form = form_to_validate)

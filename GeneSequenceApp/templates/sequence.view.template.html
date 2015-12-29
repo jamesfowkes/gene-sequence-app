@@ -1,0 +1,42 @@
+{% extends "bootstrap/base.html" %}
+
+<html>
+{% block head %}
+	{{super()}}
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+{% endblock %}
+
+	{% block title %} {{ title }} {% endblock %}
+	{% block styles %}
+		{{super()}}
+		<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/main-style.css') }}" rel="stylesheet">
+	{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<h1> Sequences for GenBank ID {{ genbank_id }} </h1>
+			
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Sequence</th>
+				<th>Length</th>
+				<th>Description</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for seq in sequences %}
+			<tr>
+				<td> {{ seq.abbreviated() }} </td>
+				<td> {{ seq.length() }} </td>
+				<td> {{ seq.Desc }} </td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+
+{% endblock %}
+
+</html>

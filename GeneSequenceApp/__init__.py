@@ -32,6 +32,7 @@ try_load_config_from_envvar("GENESEQUENCEAPP_CONFIG")
 import GeneSequenceApp.views.content
 import GeneSequenceApp.views.genbank
 import GeneSequenceApp.views.genbank_entry_form
+import GeneSequenceApp.views.sequence
 
 import GeneSequenceApp.models.sequence
 import GeneSequenceApp.models.genbank_entry

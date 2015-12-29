@@ -2,46 +2,58 @@
 
 <html>
 {% block head %}
-	{{super()}}
-	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    {{super()}}
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
 {% endblock %}
 
-	{% block title %} {{ title }} {% endblock %}
-	{% block styles %}
-		{{super()}}
-		<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
-		<link href="{{ url_for('static', filename='css/main-style.css') }}" rel="stylesheet">
-	{% endblock %}
+    {% block title %} {{ title }} {% endblock %}
+    {% block styles %}
+        {{super()}}
+        <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/main-style.css') }}" rel="stylesheet">
+    {% endblock %}
 
 {% block content %}
 <div class="container">
 
-	<h1> GenBank Entries </h1>
-			
-	<table class="table">
-		<thead>
-			<tr>
-				<th>GenBank ID</th>
-				<th>Accession Number</th>
-				<th>Species</th>
-				<th>Description</th>
-				<th>Silk Type</th>
-			</tr>
-		</thead>
-		<tbody>
-		{% for entry in genbank_entries %}
-			<tr>
-				<td>
-					<a href='http://www.ncbi.nlm.nih.gov/nuccore/{{ entry.GenBank_ID }}'>{{ entry.GenBank_ID }}</a>
-				</td>
-				<td>{{ entry.Accession_Number }} </td>
-				<td>{{ entry.Genus }} {{ entry.Species }}</td>
-				<td>{{ entry.Desc }} </td>
-				<td>{{ entry.Silk_Type }}</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
+    <h1> GenBank Entries </h1>
+        
+    {% with messages = get_flashed_messages(with_categories=true) %}    
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="col-md-12 flash alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>GenBank ID</th>
+                <th>Accession Number</th>
+                <th>Species</th>
+                <th>Description</th>
+                <th>Silk Type</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entry in genbank_entries %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('render_sequences_view', genbank_id=entry.GenBank_ID) }}"> {{ entry.GenBank_ID }}</a>
+                    (<a href='http://www.ncbi.nlm.nih.gov/nuccore/{{ entry.GenBank_ID }}'>
+                    GenBank
+                    </a>)
+                    </td>
+                </td>
+                <td>{{ entry.Accession_Number }} </td>
+                <td>{{ entry.Genus }} {{ entry.Species }}</td>
+                <td>{{ entry.Desc }} </td>
+                <td>{{ entry.Silk_Type }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}
 

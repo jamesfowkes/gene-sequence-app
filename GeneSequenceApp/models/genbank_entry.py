@@ -6,10 +6,7 @@ import pickle
 import datetime
 
 from sqlalchemy import Column, Integer, String
-
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-from Bio.Alphabet import IUPAC
+from sqlalchemy.orm import relationship
 
 import GeneSequenceApp
 from GeneSequenceApp.db import session, Base
@@ -34,7 +31,8 @@ class GenBankEntry(Base):
     Species = Column(String)
     Silk_Type = Column(String)
     Date_Added = Column(Integer)
-    
+    Sequences = relationship("Sequence")
+
     @classmethod
     def all(self):
         return session().query(GenBankEntry).all()
@@ -78,9 +76,13 @@ class GenBankEntry(Base):
         session().add(self)
         session().commit()
 
+    @staticmethod
+    def exists(genbank_id):
+        query = session().query(GenBankEntry).filter(GenBankEntry.GenBank_ID == genbank_id)
+        return query.count() == 1
+
     @staticmethod    
     def fill_db_with_test_data():
-        
         GenBankEntry(GenBank_ID="62638183", Accession_Number="AY994149.1", Desc="Latrodectus hesperus egg case silk protein-1 (ECP-1) mRNA, complete cds", Genus="Latrodectus", Species="hesperus", Silk_Type="ECP", Date_Added=0).insert()
         GenBankEntry(GenBank_ID="399932052", Accession_Number="JX262192", Desc="Latrodectus hesperus clone 2525 aggregate gland silk factor 2 mRNA, complete cds", Genus="Latrodectus", Species="hesperus", Silk_Type="AcSp", Date_Added=0).insert()
         GenBankEntry(GenBank_ID="422900783", Accession_Number="JX978182", Desc="Latrodectus geometricus clone LgSD7 aciniform spidroin 1 (AcSp1) gene, partial cds", Genus="Latrodectus", Species="geometricus", Silk_Type="AcSp", Date_Added=0).insert()
@@ -102,6 +104,13 @@ class GenBankEntryTests(unittest.TestCase):
     def tearDown(self):
         os.close(self.db_fd)
         os.unlink(GeneSequenceApp.app.config['DATABASE'])
+
+    def test_GenBankEntryExists(self):
+        with GeneSequenceApp.app.test_request_context("/"):
+            GeneSequenceApp.app.preprocess_request()
+        
+            self.assertTrue(GenBankEntry.exists("62638183"))
+            self.assertFalse(GenBankEntry.exists("8542236742"))
 
     def test_FilterByGenusSpecies(self):
         with GeneSequenceApp.app.test_request_context("/"):
